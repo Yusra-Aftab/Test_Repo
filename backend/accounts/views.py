@@ -1,7 +1,11 @@
 from django.http import JsonResponse
+from django.http import JsonResponse
+from .models import UploadedFile
 
-def your_view(request):
-    data = {"message": "Your response data"}
-    response = JsonResponse(data)
-    response["Access-Control-Allow-Origin"] = "http://localhost:3000"  # Add the origin that needs access
-    return response
+
+def upload_file(request):
+    if request.method == 'POST' and request.FILES.get('mp4File'):
+        uploaded_file = UploadedFile(file=request.FILES['mp4File'])
+        uploaded_file.save()
+        return JsonResponse({'message': 'File uploaded successfully'})
+    return JsonResponse({'message': 'File upload failed'}, status=400)
